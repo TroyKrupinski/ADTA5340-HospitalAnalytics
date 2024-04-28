@@ -6,11 +6,13 @@ from scipy import stats
 import numpy as np
 import numpy as np
 import math
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
+from sklearn.tree import DecisionTreeRegressor
 
 
 # **Step 0: Data Loading and Initial Cleaning**
@@ -222,8 +224,48 @@ X = data_encoded.drop(target, axis=1)
 y = data_encoded[target]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train the linear regression model
-model = LinearRegression()
+# Train multiple regression models
+models = [
+    LinearRegression(),
+    DecisionTreeRegressor(),
+    RandomForestRegressor(),
+    GradientBoostingRegressor()
+]
+
+# Train and evaluate each model
+for model in models:
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    print(f"Model: {model.__class__.__name__}")
+    print("Mean Squared Error:", mse)
+    print("Mean Absolute Error:", mae)
+    print("R-squared Score:", r2)
+    print()
+
+# Create an ensemble model using the best performing models
+ensemble_models = [
+    LinearRegression(),
+    RandomForestRegressor()
+]
+
+# Train and evaluate the ensemble model
+ensemble_predictions = np.zeros_like(y_test)
+for model in ensemble_models:
+    model.fit(X_train, y_train)
+    ensemble_predictions += model.predict(X_test)
+
+ensemble_predictions /= len(ensemble_models)
+ensemble_mse = mean_squared_error(y_test, ensemble_predictions)
+ensemble_mae = mean_absolute_error(y_test, ensemble_predictions)
+ensemble_r2 = r2_score(y_test, ensemble_predictions)
+
+print("Ensemble Model")
+print("Mean Squared Error:", ensemble_mse)
+print("Mean Absolute Error:", ensemble_mae)
+print("R-squared Score:", ensemble_r2)
 model.fit(X_train, y_train)
 
 # Make predictions on the test set
