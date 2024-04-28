@@ -16,6 +16,9 @@ from sklearn.tree import DecisionTreeRegressor
 
 
 # **Step 0: Data Loading and Initial Cleaning**
+
+
+#Formatting Age Range
 def extract_age_lower_bound(age_group_str):
     """Extracts the lower bound of an age range from a string.
     Args:
@@ -68,6 +71,7 @@ dtype_dict = {
     'Total Costs': 'float64'
 }
 
+#Reading CSV (HINT, CHANGE CSV TO NAME OF HOSPITAL DATA YOU DOWNLOADED)
 data = pd.read_csv("HosptialDataSplit.csv", dtype=dtype_dict)
 
 # Apply the function to the 'Age Group' column and handle non-numeric issues
@@ -75,6 +79,8 @@ data['Age'] = data['Age Group'].apply(extract_age_lower_bound)
 data['Age'] = pd.to_numeric(data['Age'], errors='coerce')  # Convert to numeric, coercing errors to NaN
 
 # Handle missing values, if necessary
+
+#BALANCING DATA BASED OFF ETHNICITY, RACE SKEW IN DATA SET
 data.dropna(subset=['Age', 'Length of Stay', 'Race'], inplace=True)
 majority_size = data['Race'].value_counts().max()
 data_balanced = pd.concat(
@@ -141,7 +147,7 @@ for plot_num in range(num_plots):
     end_index = min((plot_num + 1) * 8, len(diseases))
     subset_diseases = diseases[start_index:end_index]
     
-    for demographic in ['APR Risk of Mortality']:
+    for demographic in ['APR Risk of Mortality']: #Risk of Mortality
         total_counts = data_balanced[data_balanced['CCS Diagnosis Description'].isin(subset_diseases)].groupby(demographic)['Race'].value_counts()
         plt.figure(figsize=(30, 20))
         total_counts.unstack().plot(kind='bar', stacked=True)
