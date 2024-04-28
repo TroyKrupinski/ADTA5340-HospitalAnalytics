@@ -221,6 +221,7 @@ plt.show()
 data_balanced.isnull().sum()  # Quantify missingness per column 
 # **Step 4: Machine Learning Model for Length of Stay Prediction**
 # Select features for the model
+#Using all features now
 features = [
     'Age', 
     'Gender', 
