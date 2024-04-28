@@ -221,7 +221,31 @@ plt.show()
 data_balanced.isnull().sum()  # Quantify missingness per column 
 # **Step 4: Machine Learning Model for Length of Stay Prediction**
 # Select features for the model
-features = ['Age', 'Gender', 'Race', 'Total Charges', 'Total Costs', 'APR Risk of Mortality']
+features = [
+    'Age', 
+    'Gender', 
+    'Race', 
+    'Total Charges', 
+    'Total Costs', 
+    'APR Risk of Mortality', 
+    'APR Severity of Illness Description', 
+    'APR Medical Surgical Description', 
+    'Payment Typology 1', 
+    'Payment Typology 2', 
+    'Payment Typology 3', 
+    'CCS Diagnosis Description', 
+    'CCS Procedure Description', 
+    'APR DRG Description', 
+    'APR MDC Description', 
+    'Facility Name', 
+    'Hospital County', 
+    'Health Service Area', 
+    'Type of Admission', 
+    'Patient Disposition', 
+    'Emergency Department Indicator', 
+    'Abortion Edit Indicator', 
+    'Birth Weight'
+]
 target = 'Length of Stay'
 data_encoded = pd.get_dummies(data_balanced[features + [target]], drop_first=True)
 
@@ -237,6 +261,7 @@ models = [
     RandomForestRegressor(),
     GradientBoostingRegressor()
 ]
+
 
 # Train and evaluate each model
 for model in models:
